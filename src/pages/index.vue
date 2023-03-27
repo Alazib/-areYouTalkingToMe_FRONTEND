@@ -24,7 +24,41 @@
 
 <script setup>
 import axios from 'axios';
+import VuePeerJS from 'vue-peerjs';
+import Peer from 'peerjs';
+
 useTitle('Vital - Homepage');
+
+onMounted(() => {
+  myPeer.on('open', (id) => {
+    console.log('own id ' + id);
+    ownId = id;
+    navigator.mediaDevices
+      .getUserMedia({
+        video: true,
+        audio: true,
+      })
+      .then((stream) => {
+        myStream = stream;
+        addVideoStream(ownId, stream);
+      });
+  });
+
+  myPeer.on('call', (call) => {
+    //This function is not triggered
+    call.answer(stream);
+    console.log('answering');
+
+    call.on('stream', (userVideoStream) => {
+      addVideoStream(call.peer, userVideoStream);
+    });
+  });
+});
+
+const myPeer = new Peer({
+  host: '/',
+  port: '3001',
+});
 
 const id_room = ref('');
 const password = ref('');
@@ -64,8 +98,31 @@ function createRoom() {
 }
 
 function answerCall() {
-  if (id_room.value === id_room_input.value) {
-    alert('bien');
+  if (
+    id_room.value === id_room_input.value &&
+    password.value === password_input.value
+  ) {
+    alert('CONECTANDO...');
+    console.log(id_room_input.value, id_room.value);
   }
 }
+
+// function connectToNewUser(userId, stream) {
+//   console.log('connecting to ' + userId);
+//   const call = myPeer.call(userId, stream);
+//   call.on('stream', (userVideoStream) => {
+//     console.log('calling');
+//     addVideoStream(userId, userVideoStream);
+//   });
+//   call.on('close', () => {
+//     let i = videoList.map((video) => video.id).indexOf(call.peer);
+//     videoList.splice(i, 1);
+//   });
+//   peers[userId] = call;
+// }
+
+// function addVideoStream(id, stream) {
+//   console.log('adding video to list ' + id);
+//   videoList.push({ stream, id });
+// }
 </script>
