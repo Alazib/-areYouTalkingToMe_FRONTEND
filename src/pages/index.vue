@@ -44,24 +44,22 @@ const peerLocal = new Peer('pruebaDEconceptoLOCAL');
 const peerRemoto = new Peer('pruebaDEconceptoREMOTO');
 
 peerLocal.on('open', () => {
-  console.log('Conexión LOCAL abierta');
+  console.log('Conexión LOCAL con PEERJS creada');
 });
 
 peerRemoto.on('open', () => {
-  console.log('Conexión REMOTA abierta');
+  console.log('Conexión REMOTA con PEERJS creada');
 });
 
 //Connecting peers
 const connLocal = peerLocal.connect('pruebaDEconceptoREMOTO');
 const connRemota = peerRemoto.connect('pruebaDEconceptoLOCAL');
+console.log('Conexión LOCAL abierta?', connLocal.open);
 
 //Sending a message to peerRemoto
-connLocal.on('conecction', () => {
-  connLocal.send('hi!');
+connLocal.on('open', () => {
   console.log('Conexión con REMOTO creada');
-});
-peerLocal.on('error', (err) => {
-  console.log(err);
+  connLocal.send('hi!');
 });
 
 //Reciving the message form peerLocal
