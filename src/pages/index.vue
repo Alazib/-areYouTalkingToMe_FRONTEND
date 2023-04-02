@@ -5,6 +5,7 @@
         <q-btn text-color="black" @click="createRoom()">Create new room</q-btn>
         <div>ID ROOM: {{ id_room }}</div>
         <div>PASSWORD: {{ password }}</div>
+        <q-input :model-value="message"></q-input>
         <video style="width: 300px; height: 200px" id="myVideo" />
       </div>
 
@@ -15,6 +16,7 @@
           v-model="password_input"
           placeholder="Insert password"
         ></q-input>
+        <div>{{ incomingMessage }}</div>
         <video style="width: 300px; height: 200px" id="friendVideo" />
       </div>
     </div>
@@ -34,87 +36,34 @@ const id_room = ref('');
 const password = ref('');
 const id_room_input = ref('');
 const password_input = ref('');
+const message = ref('');
+const incomingMessage = ref('');
 
-const peer = new Peer('');
+//Creating the a Peer Server connection.
+const peer1 = new Peer('pruebaDEconceptoLOCAL');
+const peer2 = new Peer('pruebaDEconceptoREMOTO');
 
-peer.on('open', (id) => {
-  console.log('My peer ID is: ' + id);
+peer1.on('open', () => {
+  console.log('Conexión LOCAL abierta');
+});
+peer2.on('open', () => {
+  console.log('Conexión REMOTA abierta');
 });
 
-// function getAllRooms() {
-//   axios({
-//     method: 'get',
-//     url: 'http://localhost:3001/api/rooms',
-//     headers: {
-//       Authorization:
-//         'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDFkZDg0Y2EyZGE3MGRhOTViOWU1MDUiLCJyb2xlIjpbInVzZXIiXSwiaWF0IjoxNjc5ODIyNTIyLCJleHAiOjE2ODI0MTQ1MjJ9.eZmc466hOt83ZNtJRRt2KNuZ2EHHj6IlkWni4mtmf9A',
-//     },
-//   }).then((res) => {
-//     console.log(res.data);
-//   });
-// }
+//Connecting with peer2
+const conn = peer1.connect('pruebaDEconceptoREMOTO');
 
-function createRoom() {
-  const getUserMedia = navigator.mediaDevices.getUserMedia({
-    audio: true,
-    video: true,
+//Sending a message to peer2
+conn.on('open', () => {
+  console.log('Conexión creada');
+  conn.send('hi!');
+});
+
+//Reciving the message form peer1
+peer2.on('connection', (conn) => {
+  conn.on('data', (data) => {
+    // Will print 'hi!'
+    console.log(data);
   });
-
-  getUserMedia.then((stream) => {
-    const myVideo = document.getElementById('myVideo');
-    myVideo.srcObject = stream;
-    myVideo.play();
-
-    // peer.on('call', (call) => {
-    //   call.answer(stream);
-    //   call.on('stream', (remoteStream) => {
-    //     const friendVideo = document.getElementById('friendVideo');
-    //     friendVideo.srcObject = remoteStream;
-    //     friendVideo.play();
-    //   });
-    // });
-  });
-
-  getUserMedia.catch((err) => console.log(err));
-
-  // axios({
-  //   method: 'post',
-  //   url: 'http://localhost:3001/api/rooms',
-  //   data: {
-  //     id_host: '000000',
-  //     password: 'password_prueba',
-  //   },
-  //   headers: {
-  //     Authorization:
-  //       'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDFkZDg0Y2EyZGE3MGRhOTViOWU1MDUiLCJyb2xlIjpbInVzZXIiXSwiaWF0IjoxNjc5ODIyNTIyLCJleHAiOjE2ODI0MTQ1MjJ9.eZmc466hOt83ZNtJRRt2KNuZ2EHHj6IlkWni4mtmf9A',
-  //   },
-  // }).then((res) => {
-  //   console.log(res.data);
-  //   id_room.value = res.data.data.id_room;
-  // });
-}
-
-function answerCall() {
-  const getUserMedia = navigator.mediaDevices.getUserMedia({
-    audio: true,
-    video: true,
-  });
-
-  getUserMedia.then((stream) => {
-    const myVideo = document.getElementById('myVideo');
-    myVideo.srcObject = stream;
-    myVideo.play();
-
-    // const call = peer.call(id_room_input.value, stream);
-    // call.answer(stream); // Answer the call with an A/V stream.
-    // call.on('stream', function (remoteStream) {
-    //   // Show stream in some video/canvas element.
-    //   const friendVideo = document.getElementById('friendVideo');
-    //   friendVideo.srcObject = remoteStream;
-    //   friendVideo.play();
-    // });
-  });
-
-  getUserMedia.catch((err) => console.log(err));
-}
+});
 </script>
