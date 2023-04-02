@@ -39,31 +39,30 @@ const password_input = ref('');
 const message = ref('');
 const incomingMessage = ref('');
 
-//Creating the a Peer Server connection.
-const peer1 = new Peer('pruebaDEconceptoLOCAL');
-const peer2 = new Peer('pruebaDEconceptoREMOTO');
+//Creating the Peer Server connections
+const peerLocal = new Peer('pruebaDEconceptoLOCAL');
+const peerRemoto = new Peer('pruebaDEconceptoREMOTO');
 
-peer1.on('open', () => {
+peerLocal.on('open', () => {
   console.log('Conexión LOCAL abierta');
 });
-peer2.on('open', () => {
+
+peerRemoto.on('open', () => {
   console.log('Conexión REMOTA abierta');
 });
 
-//Connecting with peer2
-const conn = peer1.connect('pruebaDEconceptoREMOTO');
+//Connecting peers
+const connLocal = peerLocal.connect('pruebaDEconceptoREMOTO');
+const connRemota = peerRemoto.connect('pruebaDEconceptoLOCAL');
 
-//Sending a message to peer2
-conn.on('open', () => {
-  console.log('Conexión creada');
-  conn.send('hi!');
+//Sending a message to peerRemoto
+connLocal.on('open', () => {
+  connLocal.send('hi!');
+  console.log('Conexión con REMOTO creada');
 });
 
-//Reciving the message form peer1
-peer2.on('connection', (conn) => {
-  conn.on('data', (data) => {
-    // Will print 'hi!'
-    console.log(data);
-  });
+//Reciving the message form peerLocal
+connRemota.on('data', (data) => {
+  console.log(data);
 });
 </script>
