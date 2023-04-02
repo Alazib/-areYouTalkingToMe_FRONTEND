@@ -56,9 +56,12 @@ const connLocal = peerLocal.connect('pruebaDEconceptoREMOTO');
 const connRemota = peerRemoto.connect('pruebaDEconceptoLOCAL');
 
 //Sending a message to peerRemoto
-connLocal.on('open', () => {
+connLocal.on('conecction', () => {
   connLocal.send('hi!');
   console.log('Conexión con REMOTO creada');
+});
+peerLocal.on('error', (err) => {
+  console.log(err);
 });
 
 //Reciving the message form peerLocal
