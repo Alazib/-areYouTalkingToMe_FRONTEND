@@ -1,5 +1,5 @@
 <template>
-  <q-page class="bg-grey-3">
+  <q-page class="bg-grey-3 flex flex-col">
     <div class="test window flex h-40vw">
       <div b-2px b-black text-black grow flex-col>
         <q-btn text-color="black" @click="connect()">Connect</q-btn>
@@ -7,12 +7,22 @@
         <q-input v-model="id_remote"></q-input>
         <q-input v-model="message" placeholder="Send message..."></q-input>
         <q-btn text-color="black" @click="send()">Send</q-btn>
-
-        <span>{{ message }}</span>
-        <video style="width: 300px; height: 200px" id="myVideo" />
       </div>
     </div>
-    <div></div>
+    <div class="chat b-1px">
+      <q-chat-message
+        name="Local"
+        avatar="https://cdn.quasar.dev/img/avatar1.jpg"
+        :text="outgoingMessages"
+        sent
+      />
+
+      <q-chat-message
+        name="Remoto"
+        avatar="https://cdn.quasar.dev/img/avatar2.jpg"
+        :text="incomingMessages"
+      />
+    </div>
   </q-page>
 </template>
 
@@ -23,13 +33,14 @@ useTitle('Vital - Homepage');
 const mi_id = ref('');
 const id_remote = ref('');
 const message = ref('');
+const outgoingMessages = reactive(['1', '3']);
+const incomingMessages = reactive(['2', '4']);
 let connections = {};
 
-//Creating the Peer Server connections
 const peer = new Peer();
 
 peer.on('open', (id) => {
-  console.log('Conexión con PEERJS creada', id);
+  console.log('Conexión con  PEERJS creada', id);
   mi_id.value = id;
 });
 
@@ -45,6 +56,7 @@ function connect() {
 
 function send() {
   connections[id_remote.value].send(message.value);
+  outgoingMessages.push(message.value);
 }
 
 function manager(conn) {
@@ -55,6 +67,7 @@ function manager(conn) {
     console.log('Conexión desde local/remoto establecida!');
   });
   conn.on('data', (data) => {
+    incomingMessages.push(data);
     console.log('Recibido: ', data);
   });
   conn.on('error', (err) => {
