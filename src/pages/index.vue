@@ -1,6 +1,6 @@
 <template>
   <q-page class="bg-grey-3 flex flex-col">
-    <div class="test window flex h-40vw">
+    <div class="test window flex grow">
       <div b-2px b-black text-black grow flex-col>
         <q-btn text-color="black" @click="connect()">Connect</q-btn>
         <div>ID ROOM: {{ mi_id }}</div>
@@ -9,19 +9,22 @@
         <q-btn text-color="black" @click="send()">Send</q-btn>
       </div>
     </div>
-    <div class="chat b-1px">
-      <q-chat-message
-        name="Local"
-        avatar="https://cdn.quasar.dev/img/avatar1.jpg"
-        :text="outgoingMessages"
-        sent
-      />
-
-      <q-chat-message
-        name="Remoto"
-        avatar="https://cdn.quasar.dev/img/avatar2.jpg"
-        :text="incomingMessages"
-      />
+    <div class="chat b-1px grow">
+      <div v-for="message in chatLog" :key="message" flex flex-col>
+        <q-chat-message
+          v-if="message.from === mi_id"
+          name="Yo"
+          avatar="https://cdn.quasar.dev/img/avatar1.jpg"
+          :text="message.message"
+          sent
+        ></q-chat-message>
+        <q-chat-message
+          v-if="message.to === mi_id"
+          name="María"
+          avatar="https://cdn.quasar.dev/img/avatar2.jpg"
+          :text="message.message"
+        ></q-chat-message>
+      </div>
     </div>
   </q-page>
 </template>
@@ -33,8 +36,8 @@ useTitle('Vital - Homepage');
 const mi_id = ref('');
 const id_remote = ref('');
 const message = ref('');
-const outgoingMessages = reactive(['1', '3']);
-const incomingMessages = reactive(['2', '4']);
+const chatLog = ref([]);
+
 let connections = {};
 
 const peer = new Peer();
@@ -55,8 +58,14 @@ function connect() {
 }
 
 function send() {
+  chatLog.value.push({
+    from: mi_id.value,
+    to: id_remote,
+    message: [message.value],
+  });
   connections[id_remote.value].send(message.value);
-  outgoingMessages.push(message.value);
+
+  console.log(chatLog.value);
 }
 
 function manager(conn) {
@@ -67,8 +76,12 @@ function manager(conn) {
     console.log('Conexión desde local/remoto establecida!');
   });
   conn.on('data', (data) => {
-    incomingMessages.push(data);
     console.log('Recibido: ', data);
+    chatLog.value.push({
+      from: id_remote.value,
+      to: mi_id.value,
+      message: [data],
+    });
   });
   conn.on('error', (err) => {
     console.log(err);
