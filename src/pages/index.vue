@@ -32,6 +32,7 @@
 <script setup>
 import { Peer } from 'peerjs';
 useTitle('Vital - Homepage');
+import axios from 'axios';
 
 const mi_id = ref('');
 const id_remote = ref('');
@@ -55,6 +56,14 @@ function connect() {
   const conn = peer.connect(id_remote.value);
   connections[id_remote.value] = conn;
   manager(conn);
+
+  axios
+    .get('http://localhost:3001/api/rooms', {
+      headers: {
+        Authorization: `Bearer ${import.meta.env.VITE_SESSION_TOKEN}`,
+      },
+    })
+    .then((res) => console.log(res));
 }
 
 function send() {
