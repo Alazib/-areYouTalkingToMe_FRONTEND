@@ -2,9 +2,9 @@
   <q-page class="bg-grey-3 flex flex-col">
     <div class="test window flex grow">
       <div b-2px b-black text-black grow flex-col>
-        <q-btn text-color="black" @click="connect()">Connect</q-btn>
-        <div>ID ROOM: {{ mi_id }}</div>
-        <q-input v-model="id_remote"></q-input>
+        <q-btn text-color="black" @click="connect()">Chat with remote</q-btn>
+        <div>PEER ID: {{ localPeerId }}</div>
+        <q-input v-model="remotePeerId"></q-input>
         <q-input v-model="message" placeholder="Send message..."></q-input>
         <q-btn text-color="black" @click="send()">Send</q-btn>
       </div>
@@ -12,14 +12,14 @@
     <div class="chat b-1px grow">
       <div v-for="message in chatLog" :key="message" flex flex-col>
         <q-chat-message
-          v-if="message.from === mi_id"
+          v-if="message.from === localPeerId"
           name="Yo"
           avatar="https://cdn.quasar.dev/img/avatar1.jpg"
           :text="message.message"
           sent
         ></q-chat-message>
         <q-chat-message
-          v-if="message.to === mi_id"
+          v-if="message.to === localPeerId"
           name="María"
           avatar="https://cdn.quasar.dev/img/avatar2.jpg"
           :text="message.message"
@@ -34,8 +34,8 @@ import { Peer } from 'peerjs';
 useTitle('Vital - Homepage');
 import axios from 'axios';
 
-const mi_id = ref('');
-const id_remote = ref('');
+const localPeerId = ref('');
+const remotePeerId = ref('');
 const message = ref('');
 const chatLog = ref([]);
 
@@ -45,17 +45,17 @@ const peer = new Peer();
 
 peer.on('open', (id) => {
   console.log('Conexión con  PEERJS creada', id);
-  mi_id.value = id;
+  localPeerId.value = id;
 });
 
 peer.on('connection', (conn) => {
-  manager(conn);
+  connectionHandler(conn);
 });
 
 function connect() {
-  const conn = peer.connect(id_remote.value);
-  connections[id_remote.value] = conn;
-  manager(conn);
+  const conn = peer.connect(remotePeerId.value);
+  connections[remotePeerId.value] = conn;
+  connectionHandler(conn);
 
   axios
     .get('http://localhost:3001/api/rooms', {
@@ -68,27 +68,27 @@ function connect() {
 
 function send() {
   chatLog.value.push({
-    from: mi_id.value,
-    to: id_remote,
+    from: localPeerId.value,
+    to: remotePeerId,
     message: [message.value],
   });
-  connections[id_remote.value].send(message.value);
+  connections[remotePeerId.value].send(message.value);
 
   console.log(chatLog.value);
 }
 
-function manager(conn) {
+function connectionHandler(conn) {
   conn.on('open', () => {
     console.log(conn);
-    id_remote.value = conn.peer;
-    connections[id_remote.value] = conn;
+    remotePeerId.value = conn.peer;
+    connections[remotePeerId.value] = conn;
     console.log('Conexión desde local/remoto establecida!');
   });
   conn.on('data', (data) => {
     console.log('Recibido: ', data);
     chatLog.value.push({
-      from: id_remote.value,
-      to: mi_id.value,
+      from: remotePeerId.value,
+      to: localPeerId.value,
       message: [data],
     });
   });
