@@ -80,34 +80,25 @@ peer.on('connection', (conn) => {
 
 function connectionHandler(conn) {
   conn.on('open', () => {
-    console.log(conn);
-    remotePeerId.value = conn.peer;
-    connections[remotePeerId.value] = conn;
     alert('CONEXIÓN CON REMOTO CREADA');
   });
+
   conn.on('data', (data) => {
-    console.log('Recibido: ', data);
     chatLog.value.push({
-      from: remotePeerId.value,
-      to: localPeerId.value,
+      from: users.remotelUser.id,
+      to: users.localUser.id,
       message: [data],
     });
-  });
-  conn.on('error', (err) => {
-    console.log(err);
-  });
-  conn.on('close', () => {
-    console.log('Conexión CERRADA');
   });
 }
 
 function send() {
   chatLog.value.push({
-    from: localPeerId.value,
-    to: remotePeerId,
+    from: users.localUser.id,
+    to: users.remotelUser.id,
     message: [message.value],
   });
-  connections[remotePeerId.value].send(message.value);
+  connections[users.remotelUser.id].send(message.value);
 
   console.log(chatLog.value);
 }
