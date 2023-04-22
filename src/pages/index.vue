@@ -2,9 +2,10 @@
   <q-page class="bg-grey-3 flex flex-col">
     <div class="test window flex grow">
       <div b-2px b-black text-black grow flex-col>
-        <q-btn text-color="black" @click="connect()">Chat with remote</q-btn>
-        <div>PEER ID: {{ localPeerId }}</div>
-        <q-input v-model="remotePeerId"></q-input>
+        <q-btn text-color="black" @click="connect()"
+          >Chat with {{ users.remotelUser.name }}</q-btn
+        >
+
         <q-input v-model="message" placeholder="Send message..."></q-input>
         <q-btn text-color="black" @click="send()">Send</q-btn>
       </div>
@@ -41,48 +42,48 @@ const chatLog = ref([]);
 
 let connections = {};
 
-const peer = new Peer();
+const users = {
+  localUser: {
+    id: '6442bfc2b1ea41306eaf8a9c',
+    name: 'J.Alberto',
+  },
+  remotelUser: {
+    id: '64202787a6fdd0375fedd1ab',
+    name: 'Ulises',
+  },
+};
+
+const peer = new Peer(users.localUser.id);
 
 peer.on('open', (id) => {
   console.log('Conexión con  PEERJS creada', id);
   localPeerId.value = id;
 });
 
+function connect() {
+  const conn = peer.connect(users.remotelUser.id);
+  connections[users.remotelUser.id] = conn;
+  connectionHandler(conn);
+
+  // axios
+  //   .get('http://localhost:3001/api/rooms', {
+  //     headers: {
+  //       Authorization: `Bearer ${import.meta.env.VITE_SESSION_TOKEN}`,
+  //     },
+  //   })
+  //   .then((res) => console.log(res));
+}
+
 peer.on('connection', (conn) => {
   connectionHandler(conn);
 });
-
-function connect() {
-  const conn = peer.connect(remotePeerId.value);
-  connections[remotePeerId.value] = conn;
-  connectionHandler(conn);
-
-  axios
-    .get('http://localhost:3001/api/rooms', {
-      headers: {
-        Authorization: `Bearer ${import.meta.env.VITE_SESSION_TOKEN}`,
-      },
-    })
-    .then((res) => console.log(res));
-}
-
-function send() {
-  chatLog.value.push({
-    from: localPeerId.value,
-    to: remotePeerId,
-    message: [message.value],
-  });
-  connections[remotePeerId.value].send(message.value);
-
-  console.log(chatLog.value);
-}
 
 function connectionHandler(conn) {
   conn.on('open', () => {
     console.log(conn);
     remotePeerId.value = conn.peer;
     connections[remotePeerId.value] = conn;
-    console.log('Conexión desde local/remoto establecida!');
+    alert('CONEXIÓN CON REMOTO CREADA');
   });
   conn.on('data', (data) => {
     console.log('Recibido: ', data);
@@ -98,5 +99,16 @@ function connectionHandler(conn) {
   conn.on('close', () => {
     console.log('Conexión CERRADA');
   });
+}
+
+function send() {
+  chatLog.value.push({
+    from: localPeerId.value,
+    to: remotePeerId,
+    message: [message.value],
+  });
+  connections[remotePeerId.value].send(message.value);
+
+  console.log(chatLog.value);
 }
 </script>
