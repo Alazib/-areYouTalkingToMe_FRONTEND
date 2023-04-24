@@ -64,13 +64,17 @@ function connect() {
 
   connectionHandler(conn);
 
-  // axios
-  //   .get('http://localhost:3001/api/rooms', {
-  //     headers: {
-  //       Authorization: `Bearer ${import.meta.env.VITE_SESSION_TOKEN}`,
-  //     },
-  //   })
-  //   .then((res) => console.log(res));
+  axios({
+    method: 'POST',
+    url: 'http://localhost:3001/api/rooms',
+    headers: {
+      Authorization: `Bearer ${import.meta.env.VITE_SESSION_TOKEN}`,
+    },
+    data: {
+      id_host: '12345678',
+      password: 'Ceniciento',
+    },
+  }).then((res) => console.log(res));
 }
 
 peer.on('connection', (conn) => {
