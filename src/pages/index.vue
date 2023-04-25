@@ -71,8 +71,8 @@ function connect() {
       Authorization: `Bearer ${import.meta.env.VITE_SESSION_TOKEN}`,
     },
     data: {
-      id_host: '12345678',
       password: 'Ceniciento',
+      id_guest: '64202787a6fdd0375fedd1ab',
     },
   }).then((res) => console.log(res));
 }
