@@ -116,7 +116,11 @@ function send() {
       Authorization: `Bearer ${import.meta.env.VITE_SESSION_TOKEN}`,
     },
     data: {
-      chatLog: chatLog.value,
+      messageLog: {
+        from: users.localUser.id,
+        to: users.remoteUser.id,
+        message: [message.value],
+      },
     },
   }).then((res) => console.log(res));
 }
