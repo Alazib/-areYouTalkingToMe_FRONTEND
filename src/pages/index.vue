@@ -37,6 +37,7 @@ import axios from 'axios';
 
 const message = ref('');
 const chatLog = ref([]);
+let chatRoom_id = undefined;
 
 let connections = {};
 
@@ -74,13 +75,15 @@ function connect() {
       password: 'contraseña',
       id_guest: users.remoteUser.id,
     },
-  }).then((res) => console.log(res));
+  }).then((res) => {
+    chatRoom_id = res.data.data._id;
+    console.log(chatRoom_id);
+    console.log(res);
+  });
 }
 
 peer.on('connection', (conn) => {
   connectionHandler(conn);
-
-  console.log('hola');
 });
 
 function connectionHandler(conn) {
@@ -106,6 +109,15 @@ function send() {
   });
   connections[users.remoteUser.id].send(message.value);
 
-  console.log(chatLog.value);
+  axios({
+    method: 'PUT',
+    url: `http://localhost:3001/api/rooms/${chatRoom_id}`,
+    headers: {
+      Authorization: `Bearer ${import.meta.env.VITE_SESSION_TOKEN}`,
+    },
+    data: {
+      chatLog: chatLog.value,
+    },
+  }).then((res) => console.log(res));
 }
 </script>
