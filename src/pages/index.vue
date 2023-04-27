@@ -17,6 +17,7 @@
           :name="users.localUser.name"
           :avatar="users.localUser.avatar"
           :text="message.message"
+          :stamp="message.date"
           sent
         ></q-chat-message>
         <q-chat-message
@@ -24,6 +25,7 @@
           :name="users.remoteUser.name"
           :avatar="users.remoteUser.avatar"
           :text="message.message"
+          :stamp="message.date"
         ></q-chat-message>
       </div>
     </div>
@@ -105,22 +107,21 @@ function connectionHandler(conn) {
   });
 
   conn.on('data', (data) => {
-    chatLog.value.push({
-      from: users.remoteUser.id,
-      to: users.localUser.id,
-      message: [data],
-    });
+    chatLog.value.push(data);
   });
 }
 
 function send() {
-  connections[users.remoteUser.id].send(message.value);
-
-  chatLog.value.push({
+  const messageLog = {
     from: users.localUser.id,
     to: users.remoteUser.id,
     message: [message.value],
-  });
+    date: new Date(),
+  };
+
+  connections[users.remoteUser.id].send(messageLog);
+
+  chatLog.value.push(messageLog);
 
   axios({
     method: 'PUT',
@@ -129,11 +130,7 @@ function send() {
       Authorization: `Bearer ${import.meta.env.VITE_SESSION_TOKEN}`,
     },
     data: {
-      messageLog: {
-        from: users.localUser.id,
-        to: users.remoteUser.id,
-        message: [message.value],
-      },
+      messageLog: messageLog,
     },
   }).then((res) => console.log(res));
 }
