@@ -32,13 +32,12 @@
 
 <script setup>
 import { Peer } from 'peerjs';
-useTitle('Vital - Homepage');
 import axios from 'axios';
+useTitle('Vital - Homepage');
 
 const message = ref('');
 const chatLog = ref([]);
-let chatRoom_id = undefined;
-
+let chatRoom_id = '';
 let connections = {};
 
 const users = {
@@ -61,10 +60,6 @@ peer.on('open', (id) => {
 });
 
 function connect() {
-  const conn = peer.connect(users.remoteUser.id);
-
-  connectionHandler(conn);
-
   axios({
     method: 'POST',
     url: 'http://localhost:3001/api/rooms',
@@ -77,9 +72,26 @@ function connect() {
     },
   }).then((res) => {
     chatRoom_id = res.data.data._id;
-    console.log(chatRoom_id);
-    console.log(res);
+    if (res.data.data.chatAlreadyExists) {
+      axios({
+        method: 'GET',
+        url: `http://localhost:3001/api/rooms/${chatRoom_id}`,
+        headers: {
+          Authorization: `Bearer ${import.meta.env.VITE_SESSION_TOKEN}`,
+        },
+        data: {
+          password: 'contraseña',
+          id_guest: users.remoteUser.id,
+        },
+      }).then((res) => {
+        chatLog.value.push(...res.data.data.chatLog);
+      });
+    }
   });
+
+  const conn = peer.connect(users.remoteUser.id);
+
+  connectionHandler(conn);
 }
 
 peer.on('connection', (conn) => {
@@ -102,12 +114,13 @@ function connectionHandler(conn) {
 }
 
 function send() {
+  connections[users.remoteUser.id].send(message.value);
+
   chatLog.value.push({
     from: users.localUser.id,
     to: users.remoteUser.id,
     message: [message.value],
   });
-  connections[users.remoteUser.id].send(message.value);
 
   axios({
     method: 'PUT',
