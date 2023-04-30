@@ -71,22 +71,24 @@ function connect() {
     data: {
       password: 'contraseña',
       id_guest: users.remoteUser.id,
+      participants: [users.localUser.id, users.remoteUser.id],
     },
   }).then((res) => {
     chatRoom_id = res.data.data._id;
     if (res.data.data.chatAlreadyExists) {
       axios({
-        method: 'GET',
-        url: `http://localhost:3001/api/rooms/${chatRoom_id}`,
+        method: 'POST',
+        url: 'http://localhost:3001/api/rooms',
         headers: {
           Authorization: `Bearer ${import.meta.env.VITE_SESSION_TOKEN}`,
         },
         data: {
           password: 'contraseña',
           id_guest: users.remoteUser.id,
+          participants: [users.localUser.id, users.remoteUser.id],
         },
       }).then((res) => {
-        chatLog.value.push(...res.data.data.chatLog);
+        console.log('ya existe la room BIS');
       });
     }
   });
