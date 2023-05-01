@@ -74,8 +74,7 @@ function connect() {
       participants: [users.localUser.id, users.remoteUser.id],
     },
   }).then((res) => {
-    chatRoom_id = res.data.data._id;
-    if (res.data.data.chatAlreadyExists) {
+    if (res.data.chatAlreadyExists) {
       axios({
         method: 'POST',
         url: 'http://localhost:3001/api/rooms',
@@ -88,7 +87,7 @@ function connect() {
           participants: [users.localUser.id, users.remoteUser.id],
         },
       }).then((res) => {
-        console.log('ya existe la room BIS');
+        chatLog.value.push(...res.data.data.chatLog);
       });
     }
   });
