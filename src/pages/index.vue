@@ -39,7 +39,6 @@ useTitle('Vital - Homepage');
 
 const message = ref('');
 const chatLog = ref([]);
-let chatRoom_id = '';
 let connections = {};
 
 const users = {
@@ -104,7 +103,7 @@ peer.on('connection', (conn) => {
 function connectionHandler(conn) {
   conn.on('open', () => {
     connections[users.remoteUser.id] = conn;
-    alert(`Conexión con ${users.remoteUser.name} creada`);
+    console.log(`Conexión con ${users.remoteUser.name} creada`);
   });
 
   conn.on('data', (data) => {
@@ -126,13 +125,13 @@ function send() {
 
   axios({
     method: 'PUT',
-    url: `http://localhost:3001/api/rooms/${chatRoom_id}`,
+    url: 'http://localhost:3001/api/rooms',
     headers: {
       Authorization: `Bearer ${import.meta.env.VITE_SESSION_TOKEN}`,
     },
     data: {
       messageLog: messageLog,
     },
-  }).then((res) => console.log(res));
+  }).then((res) => console.log(res.data));
 }
 </script>
