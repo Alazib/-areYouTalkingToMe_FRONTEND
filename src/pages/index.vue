@@ -11,13 +11,13 @@
       </div>
     </div>
     <div class="chat b-1px grow">
-      <div v-for="message in chatLog" :key="message" flex flex-col>
+      <div v-for="message in chatLog" :key="message.date" flex flex-col>
         <q-chat-message
           v-if="message.from === users.localUser.id"
           :name="users.localUser.name"
           :avatar="users.localUser.avatar"
           :text="message.message"
-          :stamp="message.date"
+          :stamp="updatedAtTimeAgo(message.date)"
           sent
         ></q-chat-message>
         <q-chat-message
@@ -25,7 +25,7 @@
           :name="users.remoteUser.name"
           :avatar="users.remoteUser.avatar"
           :text="message.message"
-          :stamp="message.date"
+          :stamp="updatedAtTimeAgo(message.date)"
         ></q-chat-message>
       </div>
     </div>
@@ -35,6 +35,7 @@
 <script setup>
 import { Peer } from 'peerjs';
 import axios from 'axios';
+import { timeago } from 'src/util/timeago';
 useTitle('Vital - Homepage');
 
 const message = ref('');
@@ -133,5 +134,12 @@ function send() {
       messageLog: messageLog,
     },
   }).then((res) => console.log(res.data));
+}
+
+function updatedAtTimeAgo(date) {
+  const formattedTimeAgo = date ? timeago(date) : null;
+  console.log(formattedTimeAgo);
+
+  return formattedTimeAgo.charAt(0).toUpperCase() + formattedTimeAgo?.slice(1);
 }
 </script>
