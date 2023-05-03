@@ -33,9 +33,8 @@
 
 <script setup>
 import { Peer } from 'peerjs';
-import axios from 'axios';
 import { timeago } from 'src/util/timeago';
-import { accessToChatRoom } from 'src/services/apiRequests';
+import { accessToChatRoom, updateChatLog } from 'src/services/apiRoomsRequests';
 
 useTitle('Vital - Homepage');
 
@@ -102,24 +101,12 @@ function send() {
   };
 
   connections[users.remoteUser.id].send(messageLog);
-
   chatLog.value.push(messageLog);
-
-  axios({
-    method: 'PUT',
-    url: 'http://localhost:3001/api/rooms',
-    headers: {
-      Authorization: `Bearer ${import.meta.env.VITE_SESSION_TOKEN}`,
-    },
-    data: {
-      messageLog: messageLog,
-    },
-  }).then((res) => console.log(res.data));
+  updateChatLog(messageLog);
 }
 
 function updatedAtTimeAgo(date) {
   const formattedTimeAgo = date ? timeago(date) : null;
-  console.log(formattedTimeAgo);
 
   return formattedTimeAgo.charAt(0).toUpperCase() + formattedTimeAgo?.slice(1);
 }
