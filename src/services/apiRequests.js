@@ -1,5 +1,5 @@
 async function accessToChatRoom(chatRoomData) {
-  axios({
+  return axios({
     method: 'POST',
     url: 'http://localhost:3001/api/rooms',
     headers: {
