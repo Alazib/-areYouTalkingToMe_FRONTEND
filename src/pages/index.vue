@@ -5,7 +5,6 @@
         <q-btn text-color="black" @click="connect()"
           >Chat with {{ users.remoteUser.name }}</q-btn
         >
-
         <q-input v-model="message" placeholder="Send message..."></q-input>
         <q-btn text-color="black" @click="send()">Send</q-btn>
       </div>
@@ -36,6 +35,8 @@
 import { Peer } from 'peerjs';
 import axios from 'axios';
 import { timeago } from 'src/util/timeago';
+import { accessToChatRoom } from 'src/services/apiRequests';
+
 useTitle('Vital - Homepage');
 
 const message = ref('');
@@ -61,36 +62,16 @@ peer.on('open', (id) => {
   console.log('Conexión con  PEERJS creada', id);
 });
 
-function connect() {
-  axios({
-    method: 'POST',
-    url: 'http://localhost:3001/api/rooms',
-    headers: {
-      Authorization: `Bearer ${import.meta.env.VITE_SESSION_TOKEN}`,
-    },
-    data: {
-      password: 'contraseña',
-      id_guest: users.remoteUser.id,
-      participants: [users.localUser.id, users.remoteUser.id],
-    },
-  }).then((res) => {
-    if (res.data.chatAlreadyExists) {
-      axios({
-        method: 'POST',
-        url: 'http://localhost:3001/api/rooms',
-        headers: {
-          Authorization: `Bearer ${import.meta.env.VITE_SESSION_TOKEN}`,
-        },
-        data: {
-          password: 'contraseña',
-          id_guest: users.remoteUser.id,
-          participants: [users.localUser.id, users.remoteUser.id],
-        },
-      }).then((res) => {
-        chatLog.value.push(...res.data.data.chatLog);
-      });
-    }
-  });
+async function connect() {
+  const chatRoomData = {
+    password: 'contraseña',
+    id_guest: users.remoteUser.id,
+    participants: [users.localUser.id, users.remoteUser.id],
+  };
+
+  const chatLogSaved = await accessToChatRoom(chatRoomData);
+
+  chatLogSaved ? chatLog.value.push(...chatLogSaved) : undefined;
 
   const conn = peer.connect(users.remoteUser.id);
 
