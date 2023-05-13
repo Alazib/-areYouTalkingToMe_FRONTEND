@@ -77,11 +77,7 @@ async function openChat() {
 
   chatLog ? conversation.value.push(...chatLog) : undefined;
 
-  const conn = connectAndListenRemotePeer(users.remoteUser.id);
-
-  conn.on('data', (data) => {
-    conversation.value.push(data);
-  });
+  connectAndListenRemotePeer(users.remoteUser.id);
 }
 
 function send() {

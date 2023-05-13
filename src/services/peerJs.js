@@ -17,34 +17,28 @@ const users = {
 
 const peer = new Peer(users.localUser.id);
 
-//peer2 is only in order to simulate the remote user
-// const peer2 = new Peer(users.remoteUser.id);
-
 function connectWithPeerJs() {
   peer.on('open', (id) => {
     console.log('Conexión con  PEERJS creada', id);
   });
-
-  //peer2 is only in order to simulate the remote user
-  // peer2.on('open', (id) => {
-  //   console.log('Conexión con  PEERJS creada', id);
-  // });
 }
 
 function connectAndListenRemotePeer(remoteUserID) {
   const conn = peer.connect(remoteUserID);
 
   conn.on('open', () => {
-    connections[users.remoteUser.id] = conn;
+    connections[remoteUserID] = conn;
     console.log('Conexión con remoto creada');
   });
 
-  return conn;
+  conn.on('data', (data) => {
+    alert('mensaje llegando');
+    conversation.value.push(data);
+  });
 }
 
 function sendToRemote(remoteUserId, messageLog) {
   connections[remoteUserId].send(messageLog);
-  console.log(connections[remoteUserId]);
 }
 
 export { connectWithPeerJs, connectAndListenRemotePeer, sendToRemote };
