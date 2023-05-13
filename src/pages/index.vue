@@ -2,7 +2,7 @@
   <q-page class="bg-grey-3 flex flex-col">
     <div class="test window flex grow">
       <div b-2px b-black text-black grow flex-col>
-        <q-btn text-color="black" @click="connect()"
+        <q-btn text-color="black" @click="openChat()"
           >Chat with {{ users.remoteUser.name }}</q-btn
         >
         <q-input v-model="message" placeholder="Send message..."></q-input>
@@ -10,7 +10,7 @@
       </div>
     </div>
     <div class="chat b-1px grow">
-      <div v-for="message in chatLog" :key="message.date" flex flex-col>
+      <div v-for="message in conversation" :key="message.date" flex flex-col>
         <q-chat-message
           v-if="message.from === users.localUser.id"
           :name="users.localUser.name"
@@ -32,15 +32,16 @@
 </template>
 
 <script setup>
-import { Peer } from 'peerjs';
 import { timeago } from 'src/util/timeago';
 import { accessToChatRoom, updateChatLog } from 'src/services/apiRoomsRequests';
+import {
+  connectWithPeerJs,
+  connectAndListenRemotePeer,
+  sendToRemote,
+} from 'src/services/peerJs';
+import connections from 'src/services/connections';
 
 useTitle('Vital - Homepage');
-
-const message = ref('');
-const chatLog = ref([]);
-let connections = {};
 
 const users = {
   localUser: {
@@ -54,42 +55,35 @@ const users = {
     avatar: 'https://cdn.quasar.dev/img/avatar4.jpg',
   },
 };
+const message = ref('');
+const conversation = ref([]);
+const router = useRouter();
+const route = useRoute();
 
-const peer = new Peer(users.localUser.id);
+connectWithPeerJs(users.localUser.id);
 
-peer.on('open', (id) => {
-  console.log('Conexión con  PEERJS creada', id);
-});
-
-async function connect() {
+async function openChat() {
   const chatRoomData = {
     password: 'contraseña',
     id_guest: users.remoteUser.id,
     participants: [users.localUser.id, users.remoteUser.id],
   };
 
-  const chatLogSaved = await accessToChatRoom(chatRoomData);
+  const room = await accessToChatRoom(chatRoomData);
 
-  chatLogSaved ? chatLog.value.push(...chatLogSaved) : undefined;
+  const { chatLog, _id } = room;
 
-  const conn = peer.connect(users.remoteUser.id);
+  // router.push(`/chat/${_id}`);
 
-  connectionHandler(conn);
-}
+  chatLog ? conversation.value.push(...chatLog) : undefined;
 
-peer.on('connection', (conn) => {
-  connectionHandler(conn);
-});
-
-function connectionHandler(conn) {
-  conn.on('open', () => {
-    connections[users.remoteUser.id] = conn;
-    console.log(`Conexión con ${users.remoteUser.name} creada`);
-  });
-
-  conn.on('data', (data) => {
-    chatLog.value.push(data);
-  });
+  connectAndListenRemotePeer(users.remoteUser.id);
+  setTimeout(() => {
+    connections[users.remoteUser.id].on('data', (data) => {
+      conversation.value.push(data);
+    });
+    console.log('escuchar recepcion de mensajes');
+  }, 1000);
 }
 
 function send() {
@@ -99,9 +93,8 @@ function send() {
     message: [message.value],
     date: new Date(),
   };
-
-  connections[users.remoteUser.id].send(messageLog);
-  chatLog.value.push(messageLog);
+  sendToRemote(users.remoteUser.id, messageLog);
+  conversation.value.push(messageLog);
   updateChatLog(messageLog);
 }
 

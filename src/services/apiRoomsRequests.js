@@ -7,12 +7,9 @@ async function accessToChatRoom(chatRoomData) {
     },
     data: chatRoomData,
   }).then((res) => {
-    const { chatAlreadyExists } = res.data;
-    const { chatLog } = res.data.data;
+    const room = res.data.data;
 
-    if (chatAlreadyExists) {
-      return chatLog;
-    }
+    return room;
   });
 }
 
