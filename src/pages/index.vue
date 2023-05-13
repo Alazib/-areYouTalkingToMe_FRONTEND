@@ -39,7 +39,6 @@ import {
   connectAndListenRemotePeer,
   sendToRemote,
 } from 'src/services/peerJs';
-import connections from 'src/services/connections';
 
 useTitle('Vital - Homepage');
 
@@ -55,12 +54,15 @@ const users = {
     avatar: 'https://cdn.quasar.dev/img/avatar4.jpg',
   },
 };
+const connections = {};
 const message = ref('');
 const conversation = ref([]);
 const router = useRouter();
 const route = useRoute();
 
-connectWithPeerJs(users.localUser.id);
+onMounted(() => {
+  connectWithPeerJs(users.localUser.id);
+});
 
 async function openChat() {
   const chatRoomData = {
@@ -73,7 +75,7 @@ async function openChat() {
 
   const { chatLog, _id } = room;
 
-  // router.push(`/chat/${_id}`);
+  router.push(`/chat/${_id}`);
 
   chatLog ? conversation.value.push(...chatLog) : undefined;
 

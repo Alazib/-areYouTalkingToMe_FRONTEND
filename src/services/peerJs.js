@@ -1,6 +1,6 @@
 import { Peer } from 'peerjs';
-import connections from 'src/services/connections';
 
+const connections = {};
 const users = {
   localUser: {
     id: '6442bfc2b1ea41306eaf8a9c',
@@ -38,6 +38,8 @@ function connectAndListenRemotePeer(remoteUserID) {
 }
 
 function sendToRemote(remoteUserId, messageLog) {
+  console.log(connections[remoteUserId]);
+
   connections[remoteUserId].send(messageLog);
 }
 
