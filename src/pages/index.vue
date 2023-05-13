@@ -77,13 +77,11 @@ async function openChat() {
 
   chatLog ? conversation.value.push(...chatLog) : undefined;
 
-  connectAndListenRemotePeer(users.remoteUser.id);
-  setTimeout(() => {
-    connections[users.remoteUser.id].on('data', (data) => {
-      conversation.value.push(data);
-    });
-    console.log('escuchar recepcion de mensajes');
-  }, 1000);
+  const conn = connectAndListenRemotePeer(users.remoteUser.id);
+
+  conn.on('data', (data) => {
+    conversation.value.push(data);
+  });
 }
 
 function send() {
