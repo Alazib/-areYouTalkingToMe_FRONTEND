@@ -13,7 +13,18 @@ async function accessToChatRoom(chatRoomData) {
   });
 }
 
-function updateChatLog(messageLog) {
+async function getChatLog(id_room) {
+  return axios({
+    url: `${import.meta.env.VITE_API_ROOMS}/${id_room}`,
+    headers: {
+      Authorization: `Bearer ${import.meta.env.VITE_SESSION_TOKEN}`,
+    },
+  }).then((res) => {
+    return res.data.data.chatLog;
+  });
+}
+
+function updateChatLog(messageLog, id_room) {
   axios({
     method: 'PUT',
     url: import.meta.env.VITE_API_ROOMS,
@@ -22,8 +33,9 @@ function updateChatLog(messageLog) {
     },
     data: {
       messageLog: messageLog,
+      id_room: id_room,
     },
   }).then((res) => console.log(res.data));
 }
 
-export { accessToChatRoom, updateChatLog };
+export { accessToChatRoom, updateChatLog, getChatLog };
