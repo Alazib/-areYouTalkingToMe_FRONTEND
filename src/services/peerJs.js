@@ -21,6 +21,8 @@ function connectAndListenRemotePeer(remoteUserID) {
   });
 
   peer.on('connection', (conn) => {
+    alert('Ulises ha conectado contigo');
+    connections[remoteUserID] = conn;
     conn.on('data', (data) => {
       console.log('2: CONEXIÓN AL RECIBIR', conn);
       alert('mensaje llegando a local');
@@ -30,7 +32,7 @@ function connectAndListenRemotePeer(remoteUserID) {
 }
 
 function sendToRemote(remoteUserId, messageLog) {
-  console.log(connections[remoteUserId]);
+  console.log('3 CONEXIÓN AL ENVIAR MENSAJE', connections[remoteUserId]);
 
   connections[remoteUserId].send(messageLog);
 }
