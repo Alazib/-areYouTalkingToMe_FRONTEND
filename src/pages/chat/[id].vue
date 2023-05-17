@@ -29,7 +29,7 @@
 <script setup>
 import { timeago } from 'src/util/timeago';
 import { getChatLog, updateChatLog } from 'src/services/apiRoomsRequests';
-import { sendToRemote } from 'src/services/peerJs';
+import { connectAndListenRemotePeer, sendToRemote } from 'src/services/peerJs';
 import users from 'src/services/users';
 
 const route = useRoute();
@@ -38,6 +38,8 @@ const conversation = ref([]);
 const id_room = route.params.id;
 
 onMounted(async () => {
+  connectAndListenRemotePeer(users.remoteUser.id);
+
   const chatLog = await getChatLog(id_room);
 
   conversation.value.push(...chatLog);

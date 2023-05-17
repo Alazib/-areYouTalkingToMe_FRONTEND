@@ -11,18 +11,17 @@
 </template>
 
 <script setup>
-import { connectWithPeerJs } from 'src/services/peerJs';
 import { accessToChatRoom } from 'src/services/apiRoomsRequests';
-import { connectAndListenRemotePeer } from 'src/services/peerJs';
+import { connectWithPeerJs } from 'src/services/peerJs';
 import users from 'src/services/users';
 
 useTitle('Are U Talking 2 Me?');
 
-const router = useRouter();
-
 onMounted(() => {
   connectWithPeerJs(users.localUser.id);
 });
+
+const router = useRouter();
 
 async function openChat() {
   const chatRoomData = {
@@ -34,8 +33,6 @@ async function openChat() {
   const room = await accessToChatRoom(chatRoomData);
 
   const { _id } = room;
-
-  connectAndListenRemotePeer(users.remoteUser.id);
 
   router.push(`/chat/${_id}`);
 }
