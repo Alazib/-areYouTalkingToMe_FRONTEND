@@ -13,15 +13,19 @@ function connectWithPeerJs() {
 
 function connectAndListenRemotePeer(remoteUserID) {
   const conn = peer.connect(remoteUserID);
+  console.log('1: CONEXIÓN NADA MAS CONECTAR', conn);
 
   conn.on('open', () => {
     connections[remoteUserID] = conn;
     console.log('Conexión con remoto creada');
   });
 
-  conn.on('data', (data) => {
-    alert('mensaje llegando');
-    conversation.value.push(data);
+  peer.on('connection', (conn) => {
+    conn.on('data', (data) => {
+      console.log('2: CONEXIÓN AL RECIBIR', conn);
+      alert('mensaje llegando a local');
+      console.log(data);
+    });
   });
 }
 
