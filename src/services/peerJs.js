@@ -9,6 +9,16 @@ function connectWithPeerJs() {
   peer.on('open', (id) => {
     console.log('Conexión con  PEERJS creada', id);
   });
+  peer.on('connection', (connection) => {
+    alert('Ulises ha conectado contigo');
+    // connections[remoteUserID] = connection;
+
+    connection.on('data', (data) => {
+      console.log('2: CONEXIÓN AL RECIBIR', connection);
+      alert('mensaje llegando a local');
+      console.log(data);
+    });
+  });
 }
 
 function connectAndListenRemotePeer(remoteUserID) {
@@ -19,15 +29,10 @@ function connectAndListenRemotePeer(remoteUserID) {
     connections[remoteUserID] = conn;
     console.log('Conexión con remoto creada');
   });
-
-  peer.on('connection', (conn) => {
-    alert('Ulises ha conectado contigo');
-    connections[remoteUserID] = conn;
-    conn.on('data', (data) => {
-      console.log('2: CONEXIÓN AL RECIBIR', conn);
-      alert('mensaje llegando a local');
-      console.log(data);
-    });
+  conn.on('data', (data) => {
+    console.log('2: CONEXIÓN AL RECIBIR', connection);
+    alert('mensaje llegando a local');
+    console.log(data);
   });
 }
 

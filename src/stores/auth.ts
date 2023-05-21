@@ -12,6 +12,7 @@ interface UserInfo {
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: null as UserInfo | null,
+    // token: token
   }),
 
   getters: {
@@ -23,7 +24,6 @@ export const useAuthStore = defineStore('auth', {
         const res = await userLogin(email, password);
         const user = res.data.data.user;
         this.user = user;
-        // this.$patch(user) por qué no funciona
       } catch (error) {
         console.log(error);
       }
