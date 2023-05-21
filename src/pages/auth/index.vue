@@ -40,28 +40,32 @@
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { userLogin } from '../../services/apiAuthRequests';
+import { useAuthStore } from 'src/stores/auth';
 
-const email = ref<string | null>('');
-const password = ref<string | null>('');
-
+const auth = useAuthStore();
 const q = useQuasar();
 const router = useRouter();
 
+const email = ref<string | null>('');
+const password = ref<string | null>('');
+console.log(auth.name);
+
 async function onSubmit() {
-  const res = await userLogin(email.value, password.value);
+  await auth.login(email.value, password.value);
 
-  if (res.status === 200) {
-    q.notify({
-      color: 'green-4',
-      textColor: 'white',
-      icon: 'cloud_done',
-      message: 'Submitted',
-      position: 'center',
-    });
+  alert(auth.name);
 
-    router.push('/');
-  }
+  // if (res.status === 200) {
+  //   q.notify({
+  //     color: 'green-4',
+  //     textColor: 'white',
+  //     icon: 'cloud_done',
+  //     message: 'Submitted',
+  //     position: 'center',
+  //   });
+  //
+  // }
+  router.push('/');
 }
 
 function onReset() {

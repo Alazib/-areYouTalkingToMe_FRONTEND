@@ -14,6 +14,10 @@
 import { accessToChatRoom } from 'src/services/apiRoomsRequests';
 import { connectWithPeerJs } from 'src/services/peerJs';
 import users from 'src/services/users';
+import { useAuthStore } from 'src/stores/auth';
+
+const auth = useAuthStore();
+console.log(auth.name);
 
 useTitle('Are U Talking 2 Me?');
 

@@ -1,11 +1,12 @@
 import { defineStore } from 'pinia';
+import { userLogin } from '../services/apiAuthRequests';
 
 interface UserInfo {
+  _id: string;
   name: string;
   age: number;
   email: string;
-  password: string;
-  role: string;
+  role: string[];
 }
 
 export const useAuthStore = defineStore('auth', {
@@ -17,8 +18,15 @@ export const useAuthStore = defineStore('auth', {
     name: (state) => state.user?.name,
   },
   actions: {
-    increment() {
-      ('');
+    async login(email: string | null, password: string | null) {
+      try {
+        const res = await userLogin(email, password);
+        const user = res.data.data.user;
+        this.user = user;
+        // this.$patch(user) por qué no funciona
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
 });
