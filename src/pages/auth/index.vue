@@ -40,6 +40,7 @@
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
+import { userLogin } from '../../services/apiAuthRequests';
 
 const email = ref<string | null>('');
 const password = ref<string | null>('');
@@ -47,24 +48,20 @@ const password = ref<string | null>('');
 const q = useQuasar();
 const router = useRouter();
 
-function onSubmit() {
-  axios({
-    method: 'POST',
-    url: `${import.meta.env.VITE_API_AUTH}/login`,
-    data: { email: email.value, password: password.value },
-  }).then((res) => {
-    if (res.status === 200) {
-      q.notify({
-        color: 'green-4',
-        textColor: 'white',
-        icon: 'cloud_done',
-        message: 'Submitted',
-        position: 'center',
-      });
+async function onSubmit() {
+  const res = await userLogin(email.value, password.value);
 
-      router.replace('/');
-    }
-  });
+  if (res.status === 200) {
+    q.notify({
+      color: 'green-4',
+      textColor: 'white',
+      icon: 'cloud_done',
+      message: 'Submitted',
+      position: 'center',
+    });
+
+    router.push('/');
+  }
 }
 
 function onReset() {
