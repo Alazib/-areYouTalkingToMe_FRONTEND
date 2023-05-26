@@ -14,7 +14,7 @@ export const useAuthStore = defineStore('auth', {
     user: null as UserInfo | null,
     // token: token
   }),
-
+  persist: { key: 'auth-ayttm' },
   getters: {
     name: (state) => state.user?.name,
   },
