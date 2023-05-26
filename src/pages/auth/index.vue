@@ -48,12 +48,9 @@ const router = useRouter();
 
 const email = ref<string | null>('');
 const password = ref<string | null>('');
-console.log(auth.name);
 
 async function onSubmit() {
   await auth.login(email.value, password.value);
-
-  alert(auth.name);
 
   // if (res.status === 200) {
   //   q.notify({
@@ -65,7 +62,9 @@ async function onSubmit() {
   //   });
   //
   // }
-  router.push('/');
+
+  const goTo = router.currentRoute.value.query.next?.toString();
+  router.replace(goTo ?? '/');
 }
 
 function onReset() {

@@ -30,7 +30,6 @@ export const useAuthStore = defineStore('auth', {
     },
 
     isLoggedIn(): boolean {
-      console.log(this);
       return !!this.token;
     },
   },

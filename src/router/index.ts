@@ -8,6 +8,7 @@ import {
 
 import { setupLayouts } from 'virtual:generated-layouts';
 import generatedRoutes from 'virtual:generated-pages';
+import { useAuthStore } from 'src/stores/auth';
 
 const routes = setupLayouts(generatedRoutes);
 
@@ -28,7 +29,17 @@ export default route(function (/* { store, ssrContext } */) {
     history: createHistory(process.env.VUE_ROUTER_BASE),
   });
 
-  console.log(Router.getRoutes());
+  Router.beforeEach((to, from) => {
+    const event: Record<string, unknown> = { to: to, from: from };
+
+    event.redirectTo = `/auth/?next=${to.path}`;
+
+    const authStore = useAuthStore();
+
+    if (!authStore.isLoggedIn && to.name !== 'auth') {
+      return event.redirectTo as string;
+    }
+  });
 
   return Router;
 });
