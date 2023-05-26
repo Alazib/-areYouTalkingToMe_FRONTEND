@@ -9,14 +9,30 @@ interface UserInfo {
   role: string[];
 }
 
+const initUser: UserInfo = {
+  _id: '',
+  name: '',
+  age: 0,
+  email: '',
+  role: [],
+};
+const initToken = '';
+
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    user: null as UserInfo | null,
-    // token: token
+    user: initUser,
+    token: initToken,
   }),
   persist: { key: 'auth-ayttm' },
   getters: {
-    name: (state) => state.user?.name,
+    userName(): string {
+      return this.user.name;
+    },
+
+    isLoggedIn(): boolean {
+      console.log(this);
+      return !!this.token;
+    },
   },
   actions: {
     async login(email: string | null, password: string | null) {
@@ -24,6 +40,7 @@ export const useAuthStore = defineStore('auth', {
         const res = await userLogin(email, password);
         const user = res.data.data.user;
         this.user = user;
+        this.token = res.data.data.token;
       } catch (error) {
         console.log(error);
       }
