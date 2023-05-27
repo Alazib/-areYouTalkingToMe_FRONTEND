@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { userLogin } from '../services/apiAuthRequests';
+import httpErrorHandler from 'src/util/httpErrorHandler';
 
 interface UserInfo {
   _id: string;
@@ -37,11 +38,16 @@ export const useAuthStore = defineStore('auth', {
     async login(email: string | null, password: string | null) {
       try {
         const res = await userLogin(email, password);
+        console.log(res);
         const user = res.data.data.user;
         this.user = user;
         this.token = res.data.data.token;
-      } catch (error) {
-        console.log(error);
+      } catch (error: unknown) {
+        const errorMessage = httpErrorHandler(
+          error as Record<string, unknown>
+        ) as string;
+
+        return errorMessage;
       }
     },
   },

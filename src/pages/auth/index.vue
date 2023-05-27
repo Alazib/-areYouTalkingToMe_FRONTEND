@@ -50,21 +50,22 @@ const email = ref<string | null>('');
 const password = ref<string | null>('');
 
 async function onSubmit() {
-  await auth.login(email.value, password.value);
+  const errorMessage = await auth.login(email.value, password.value);
 
-  // if (res.status === 200) {
-  //   q.notify({
-  //     color: 'green-4',
-  //     textColor: 'white',
-  //     icon: 'cloud_done',
-  //     message: 'Submitted',
-  //     position: 'center',
-  //   });
-  //
-  // }
-
-  const goTo = router.currentRoute.value.query.next?.toString();
-  router.replace(goTo ?? '/');
+  if (!errorMessage) {
+    q.notify({
+      color: 'green-4',
+      textColor: 'white',
+      icon: 'cloud_done',
+      message: 'Bienvenido',
+      position: 'top',
+    });
+    const goTo = router.currentRoute.value.query.next?.toString();
+    router.replace(goTo ?? '/');
+  } else {
+    console.log(errorMessage);
+    alert(errorMessage);
+  }
 }
 
 function onReset() {
