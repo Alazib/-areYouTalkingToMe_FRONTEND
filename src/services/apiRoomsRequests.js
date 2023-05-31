@@ -1,9 +1,13 @@
+import { useAuthStore } from 'src/stores/auth';
+
+const authStore = useAuthStore();
+
 async function accessToChatRoom(chatRoomData) {
   return axios({
     method: 'POST',
     url: import.meta.env.VITE_API_ROOMS,
     headers: {
-      Authorization: `Bearer ${import.meta.env.VITE_SESSION_TOKEN}`,
+      Authorization: `Bearer ${authStore.token}`,
     },
     data: chatRoomData,
   }).then((res) => {
@@ -17,7 +21,7 @@ async function getChatLog(id_room) {
   return axios({
     url: `${import.meta.env.VITE_API_ROOMS}/${id_room}`,
     headers: {
-      Authorization: `Bearer ${import.meta.env.VITE_SESSION_TOKEN}`,
+      Authorization: `Bearer ${authStore.token}`,
     },
   }).then((res) => {
     return res.data.data.chatLog;
@@ -29,7 +33,7 @@ function updateChatLog(messageLog, id_room) {
     method: 'PUT',
     url: import.meta.env.VITE_API_ROOMS,
     headers: {
-      Authorization: `Bearer ${import.meta.env.VITE_SESSION_TOKEN}`,
+      Authorization: `Bearer ${authStore.token}`,
     },
     data: {
       messageLog: messageLog,

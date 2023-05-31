@@ -11,7 +11,6 @@
             (val) => (val && val.length > 0) || 'Please type a valid e-mail',
           ]"
         />
-
         <q-input
           filled
           type="password"
@@ -22,7 +21,6 @@
             (val) => (val && val.length > 0) || 'Please type your password ',
           ]"
         />
-
         <div>
           <q-btn label="Submit" type="submit" color="primary" />
           <q-btn
