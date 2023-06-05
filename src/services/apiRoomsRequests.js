@@ -1,8 +1,8 @@
 import { useAuthStore } from 'src/stores/auth';
 
-const authStore = useAuthStore();
-
 async function accessToChatRoom(chatRoomData) {
+  const authStore = useAuthStore();
+
   return axios({
     method: 'POST',
     url: import.meta.env.VITE_API_ROOMS,
@@ -18,6 +18,8 @@ async function accessToChatRoom(chatRoomData) {
 }
 
 async function getChatLog(id_room) {
+  const authStore = useAuthStore();
+
   return axios({
     url: `${import.meta.env.VITE_API_ROOMS}/${id_room}`,
     headers: {
@@ -29,6 +31,8 @@ async function getChatLog(id_room) {
 }
 
 function updateChatLog(messageLog, id_room) {
+  const authStore = useAuthStore();
+
   axios({
     method: 'PUT',
     url: import.meta.env.VITE_API_ROOMS,

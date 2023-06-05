@@ -31,14 +31,20 @@ import { timeago } from 'src/util/timeago';
 import { getChatLog, updateChatLog } from 'src/services/apiRoomsRequests';
 import { connectRemotePeer, sendToRemote } from 'src/services/peerJs';
 import users from 'src/services/users';
+import { useAuthStore } from 'src/stores/auth';
 
 const route = useRoute();
-const message = ref('');
-const conversation = ref([]);
 const id_room = route.params.id;
 
+const authStore = useAuthStore();
+
+const message = ref('');
+const conversation = ref([]);
+
+const remoteId = sessionStorage.getItem('remote_user');
+
 onMounted(async () => {
-  connectRemotePeer(users.remoteUser.id);
+  connectRemotePeer(remoteId);
 
   const chatLog = await getChatLog(id_room);
 
@@ -47,8 +53,8 @@ onMounted(async () => {
 
 function send() {
   const messageLog = {
-    from: users.localUser.id,
-    to: users.remoteUser.id,
+    from: authStore.user._id,
+    to: remoteId,
     message: [message.value],
     date: new Date(),
   };
@@ -56,7 +62,7 @@ function send() {
   updateChatLog(messageLog, id_room);
   conversation.value.push(messageLog);
 
-  sendToRemote(users.remoteUser.id, messageLog);
+  sendToRemote(remoteId, messageLog);
 }
 
 function updatedAtTimeAgo(date) {

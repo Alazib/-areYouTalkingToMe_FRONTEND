@@ -21,11 +21,11 @@
     </q-header>
 
     <q-drawer show-if-above v-model="leftDrawerOpen" side="left" elevated>
-      <!-- drawer content -->
+      <contacts />
     </q-drawer>
 
     <q-drawer show-if-above v-model="rightDrawerOpen" side="right" bordered>
-      <contacts />
+      <active-chats />
     </q-drawer>
 
     <q-page-container>

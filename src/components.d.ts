@@ -5,12 +5,12 @@ import '@vue/runtime-core';
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    Contacts: typeof import('./components/contacts.vue')['default'];
+    ActiveChats: typeof import('./components/ActiveChats.vue')['default'];
+    Contacts: typeof import('./components/Contacts.vue')['default'];
     Footer: typeof import('./components/Footer.vue')['default'];
     Logos: typeof import('./components/Logos.vue')['default'];
     RouterLink: typeof import('vue-router')['RouterLink'];
     RouterView: typeof import('vue-router')['RouterView'];
-    VitalWelcome: typeof import('./components/VitalWelcome.vue')['default'];
   }
 }
 

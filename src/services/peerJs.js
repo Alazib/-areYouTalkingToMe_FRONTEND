@@ -1,9 +1,9 @@
 import { Peer } from 'peerjs';
-import users from 'src/services/users';
+import { useAuthStore } from 'src/stores/auth';
 
 const connections = {};
 
-const peer = new Peer(users.localUser.id);
+const peer = new Peer(useAuthStore().user._id);
 
 function connectWithPeerJs() {
   peer.on('open', (id) => {
@@ -29,6 +29,7 @@ function connectRemotePeer(remoteUserId) {
     const conn = peer.connect(remoteUserId);
 
     connections[remoteUserId] = conn;
+
     sessionStorage.setItem(`conn:${remoteUserId}`, `${conn.connectionId}`);
 
     listenToRemotePeer(conn, remoteUserId);
@@ -49,7 +50,6 @@ function listenToRemotePeer(conn) {
 
 function sendToRemote(remoteUserId, messageLog) {
   console.log('3 CONEXIÓN AL ENVIAR MENSAJE');
-
   connections[remoteUserId].send(messageLog);
 }
 

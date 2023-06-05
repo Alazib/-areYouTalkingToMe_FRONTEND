@@ -1,7 +1,7 @@
 <template>
   <div>
     <q-toolbar class="bg-primary text-white shadow-2">
-      <q-toolbar-title>Contactos</q-toolbar-title>
+      <q-toolbar-title>Chats activos</q-toolbar-title>
     </q-toolbar>
 
     <q-list bordered>
@@ -11,16 +11,21 @@
         class="q-my-sm"
         clickable
         v-ripple
+        @click="() => openChat(contact.id)"
       >
         <q-item-section avatar>
-          <q-avatar color="primary" text-color="white">
-            {{ contact.letter }}
+          <q-avatar>
+            <img :src="`https://cdn.quasar.dev/img/${contact.avatar}`" />
           </q-avatar>
         </q-item-section>
 
         <q-item-section>
           <q-item-label>{{ contact.name }}</q-item-label>
           <q-item-label caption lines="1">{{ contact.email }}</q-item-label>
+        </q-item-section>
+
+        <q-item-section side>
+          <q-icon name="chat_bubble" color="green" />
         </q-item-section>
       </q-item>
 
@@ -44,48 +49,41 @@
           <q-item-label>{{ contact.name }}</q-item-label>
           <q-item-label caption lines="1">{{ contact.email }}</q-item-label>
         </q-item-section>
+
+        <q-item-section side>
+          <q-icon name="chat_bubble" color="grey" />
+        </q-item-section>
       </q-item>
     </q-list>
   </div>
 </template>
 
 <script setup>
+import { accessToChatRoom } from 'src/services/apiRoomsRequests';
+import { useAuthStore } from 'src/stores/auth';
+
+const router = useRouter();
+
+const authStore = useAuthStore();
+
 const contacts = [
   {
-    id: 1,
-    name: 'Ruddy Jedrzej',
-    email: 'rjedrzej0@discuz.net',
-    letter: 'R',
+    id: '64202787a6fdd0375fedd1ab',
+    name: 'Ulises',
+    email: 'ulises@gmail.com',
+    avatar: 'avatar4.jpg',
   },
   {
     id: 2,
     name: 'Mallorie Alessandrini',
     email: 'malessandrini1@marketwatch.com',
-    letter: 'M',
+    avatar: 'avatar3.jpg',
   },
   {
     id: 3,
     name: 'Elisabetta Wicklen',
     email: 'ewicklen2@microsoft.com',
-    letter: 'E',
-  },
-  {
-    id: 4,
-    name: 'Seka Fawdrey',
-    email: 'sfawdrey3@wired.com',
-    letter: 'S',
-  },
-  {
-    id: 1,
-    name: 'Ruddy Jedrzej',
-    email: 'rjedrzej0@discuz.net',
-    letter: 'R',
-  },
-  {
-    id: 2,
-    name: 'Mallorie Alessandrini',
-    email: 'malessandrini1@marketwatch.com',
-    letter: 'M',
+    avatar: 'avatar5.jpg',
   },
 ];
 
@@ -94,13 +92,29 @@ const offline = [
     id: 5,
     name: 'Brunhilde Panswick',
     email: 'bpanswick4@csmonitor.com',
-    avatar: 'avatar1.jpg',
+    avatar: 'avatar2.jpg',
   },
   {
     id: 6,
     name: 'Winfield Stapforth',
     email: 'wstapforth5@pcworld.com',
-    avatar: 'avatar3.jpg',
+    avatar: 'avatar6.jpg',
   },
 ];
+
+async function openChat(guestId) {
+  const chatRoomData = {
+    password: 'contraseña',
+    id_guest: guestId,
+    participants: [authStore.user._id, guestId],
+  };
+
+  sessionStorage.setItem('remote_user', `${guestId}`);
+
+  const room = await accessToChatRoom(chatRoomData);
+
+  const { _id } = room;
+
+  router.replace(`/chat/${_id}`);
+}
 </script>
