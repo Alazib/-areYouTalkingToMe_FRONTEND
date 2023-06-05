@@ -35,8 +35,15 @@ export default route(function (/* { store, ssrContext } */) {
     event.redirectTo = `/auth/?next=${to.path}`;
 
     const authStore = useAuthStore();
+    console.log('desde', event.from);
 
-    if (!authStore.isLoggedIn && to.name !== 'auth') {
+    console.log('hacia', event.to);
+
+    if (
+      !authStore.isLoggedIn &&
+      from.meta.authRequired !== false &&
+      to.name !== 'auth'
+    ) {
       return event.redirectTo as string;
     }
   });

@@ -1,7 +1,7 @@
 <template>
   <q-page flex justify-center items-center>
     <div m-width-400px flex flex-col items-center>
-      <h1 text-30px>INICIAR SESIÓN</h1>
+      <h1 text-30px>REGISTRO</h1>
       <q-form
         @submit="onSubmit"
         @reset="onReset"
@@ -11,6 +11,24 @@
         items-center
         mb-20px
       >
+        <q-input
+          filled
+          v-model="name"
+          label="Nombre"
+          lazy-rules
+          :rules="[
+            (val) => (val && val.length > 0) || 'Please type a valid name',
+          ]"
+        />
+        <q-input
+          filled
+          v-model="age"
+          label="Edad"
+          lazy-rules
+          :rules="[
+            (val) => (val && val.length > 0) || 'Please type a valid age',
+          ]"
+        />
         <q-input
           filled
           v-model="email"
@@ -30,9 +48,18 @@
             (val) => (val && val.length > 0) || 'Please type your password ',
           ]"
         />
-
+        <q-input
+          filled
+          type="password"
+          v-model="password2"
+          label="Repite contraseña"
+          lazy-rules
+          :rules="[
+            (val) => (val && val.length > 0) || 'Please type your password ',
+          ]"
+        />
         <div>
-          <q-btn label="Iniciar" type="submit" color="primary" />
+          <q-btn label="Enviar datos" type="submit" color="primary" />
           <q-btn
             label="Borrar datos"
             type="reset"
@@ -42,15 +69,6 @@
           />
         </div>
       </q-form>
-      <q-separator w-full mb-20px></q-separator>
-      <p text-center mb-10px>¿Aún no tienes una cuenta?</p>
-      <q-btn
-        color="primary"
-        mx-auto
-        label="Regístrate"
-        outline
-        :to="'/auth/register'"
-      />
     </div>
   </q-page>
 </template>
@@ -63,8 +81,11 @@ const auth = useAuthStore();
 const q = useQuasar();
 const router = useRouter();
 
+const name = ref<string | null>('');
+const age = ref<number | null>();
 const email = ref<string | null>('');
 const password = ref<string | null>('');
+const password2 = ref<string | null>('');
 
 async function onSubmit() {
   const errorMessage = await auth.login(email.value, password.value);
