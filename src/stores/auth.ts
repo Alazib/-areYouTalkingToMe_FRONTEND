@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { userLogin } from '../services/apiAuthRequests';
+import { userLogin, userRegister } from '../services/apiAuthRequests';
 import httpErrorHandler from 'src/util/httpErrorHandler';
 // import JWT from 'jsonwebtoken';
 
@@ -54,6 +54,25 @@ export const useAuthStore = defineStore('auth', {
           error as Record<string, unknown>
         ) as string;
 
+        return errorMessage;
+      }
+    },
+    async register(
+      name: string | null,
+      age: number | null | undefined,
+      email: string | null,
+      password: string | null
+    ) {
+      try {
+        const res = await userRegister(name, age, email, password);
+        const user = res.data.user;
+        this.user = user;
+        this.token = res.data.token;
+      } catch (error: unknown) {
+        const errorMessage = httpErrorHandler(
+          error as Record<string, unknown>
+        ) as string;
+        console.log(errorMessage);
         return errorMessage;
       }
     },

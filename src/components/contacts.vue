@@ -81,12 +81,6 @@ const contacts = [
     email: 'rjedrzej0@discuz.net',
     letter: 'R',
   },
-  {
-    id: 2,
-    name: 'Mallorie Alessandrini',
-    email: 'malessandrini1@marketwatch.com',
-    letter: 'M',
-  },
 ];
 
 const offline = [

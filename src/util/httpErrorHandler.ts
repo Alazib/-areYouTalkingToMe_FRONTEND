@@ -7,6 +7,6 @@ export default function httpErrorHandler(error: Record<string, unknown>) {
 
     return errorMessage;
   } else {
-    return 'El servidor no responde';
+    return;
   }
 }

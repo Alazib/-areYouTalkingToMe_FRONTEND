@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <div class="chat b-1px grow">
+    <div class="chat">
       <div v-for="message in conversation" :key="message.date" flex flex-col>
         <q-chat-message
           v-if="message.from === users.localUser.id"
@@ -20,8 +20,21 @@
       </div>
     </div>
     <form @submit.prevent="send()">
-      <q-input v-model="message" placeholder="Send message..."></q-input>
-      <q-btn type="submit" text-color="black">Send</q-btn>
+      <div flex>
+        <q-icon
+          name="mood"
+          color="primary"
+          size="30px"
+          mt-15px
+          mr-15px
+        ></q-icon>
+        <q-input
+          class="chat-input"
+          v-model="message"
+          placeholder="Escribe un mensaje..."
+        ></q-input>
+        <q-btn type="submit" text-color="primary" rd-20px ml-15px>Enviar</q-btn>
+      </div>
     </form>
   </q-page>
 </template>
@@ -71,3 +84,14 @@ function updatedAtTimeAgo(date) {
   return formattedTimeAgo.charAt(0).toUpperCase() + formattedTimeAgo?.slice(1);
 }
 </script>
+
+<sytle scoped lang="scss">
+.chat {
+  max-height: 70vh;
+  overflow-y: scroll;
+}
+.chat-input {
+  flex-grow: 2;
+  border-radius: 20px;
+}
+</sytle>

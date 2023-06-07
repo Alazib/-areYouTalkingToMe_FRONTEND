@@ -88,7 +88,12 @@ const password = ref<string | null>('');
 const password2 = ref<string | null>('');
 
 async function onSubmit() {
-  const errorMessage = await auth.login(email.value, password.value);
+  const errorMessage = await auth.register(
+    name.value,
+    age.value,
+    email.value,
+    password.value
+  );
 
   if (!errorMessage) {
     q.notify({
@@ -98,17 +103,20 @@ async function onSubmit() {
       message: 'Bienvenido',
       position: 'top',
     });
+    console.log('bien');
     const goTo = router.currentRoute.value.query.next?.toString();
     router.replace(goTo ?? '/');
   } else {
-    console.log(errorMessage);
-    alert(errorMessage);
+    console.log('else');
   }
 }
 
 function onReset() {
+  name.value = null;
+  age.value = null;
   email.value = null;
   password.value = null;
+  password2.value = null;
 }
 </script>
 

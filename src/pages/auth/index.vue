@@ -1,7 +1,7 @@
 <template>
   <q-page flex justify-center items-center>
     <div m-width-400px flex flex-col items-center>
-      <h1 text-30px>INICIAR SESIÓN</h1>
+      <h1 text-30px color="primary">INICIAR SESIÓN</h1>
       <q-form
         @submit="onSubmit"
         @reset="onReset"
@@ -49,7 +49,11 @@
         mx-auto
         label="Regístrate"
         outline
-        :to="'/auth/register'"
+        :to="
+          router.currentRoute.value.query.next
+            ? `register/?next=${router.currentRoute.value.query.next}`
+            : '/'
+        "
       />
     </div>
   </q-page>
