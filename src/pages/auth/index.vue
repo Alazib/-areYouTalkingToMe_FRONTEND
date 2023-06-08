@@ -51,8 +51,8 @@
         outline
         :to="
           router.currentRoute.value.query.next
-            ? `register/?next=${router.currentRoute.value.query.next}`
-            : '/'
+            ? `/auth/register/?next=${router.currentRoute.value.query.next}`
+            : '/auth/register'
         "
       />
     </div>

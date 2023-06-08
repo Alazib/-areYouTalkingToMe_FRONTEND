@@ -14,3 +14,7 @@ onMounted(() => {
   connectWithPeerJs(authStore.user._id);
 });
 </script>
+<route lang="yaml">
+meta:
+  authRequired: true
+</route>

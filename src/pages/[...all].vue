@@ -19,3 +19,7 @@
     </div>
   </div>
 </template>
+<route lang="yaml">
+meta:
+  authRequired: false
+</route>

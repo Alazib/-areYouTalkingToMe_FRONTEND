@@ -95,3 +95,7 @@ function updatedAtTimeAgo(date) {
   border-radius: 20px;
 }
 </sytle>
+<route lang="yaml">
+meta:
+  authRequired: true
+</route>
