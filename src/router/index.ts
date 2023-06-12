@@ -36,14 +36,14 @@ export default route(function (/* { store, ssrContext } */) {
 
     const authStore = useAuthStore();
 
-    const userIsNotRegister = !authStore.isLoggedIn;
+    const userIsNotRegistered = !authStore.isLoggedIn;
     const viewNeedsAuth = to.meta.authRequired === true;
-    const avoidInfiniteRedirectionLoop = to.name !== 'auth';
+    // const avoidInfiniteRedirectionLoop = to.name !== 'auth';
 
     console.log('DESDE', from, from.meta.authRequired);
     console.log('HACIA', to, to.meta.authRequired);
 
-    if (userIsNotRegister && viewNeedsAuth && avoidInfiniteRedirectionLoop) {
+    if (userIsNotRegistered && viewNeedsAuth) {
       console.log('REDIRIGIENDO a' + event.redirectTo, viewNeedsAuth);
       return event.redirectTo as string;
     }
