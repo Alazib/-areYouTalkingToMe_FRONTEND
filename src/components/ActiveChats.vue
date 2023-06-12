@@ -59,12 +59,7 @@
 </template>
 
 <script setup>
-import { accessToChatRoom } from 'src/services/apiRoomsRequests';
-import { useAuthStore } from 'src/stores/auth';
-
 const router = useRouter();
-
-const authStore = useAuthStore();
 
 const contacts = [
   {
@@ -72,6 +67,12 @@ const contacts = [
     name: 'Ulises',
     email: 'ulises@gmail.com',
     avatar: 'avatar4.jpg',
+  },
+  {
+    id: '6442bfc2b1ea41306eaf8a9c',
+    name: 'J.Alberto',
+    email: 'alazib7@gmail.com',
+    avatar: 'avatar1.jpg',
   },
   {
     id: 2,
@@ -103,18 +104,6 @@ const offline = [
 ];
 
 async function openChat(guestId) {
-  const chatRoomData = {
-    password: 'contraseña',
-    id_guest: guestId,
-    participants: [authStore.user._id, guestId],
-  };
-
-  sessionStorage.setItem('remote_user', `${guestId}`);
-
-  const room = await accessToChatRoom(chatRoomData);
-
-  const { _id } = room;
-
-  router.replace(`/chat/${_id}`);
+  router.replace(`/chat/${guestId}`);
 }
 </script>

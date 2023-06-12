@@ -42,26 +42,38 @@
 <script setup>
 import { timeago } from 'src/util/timeago';
 import { getChatLog, updateChatLog } from 'src/services/apiRoomsRequests';
+import { connectWithPeerJs } from 'src/services/peerJs';
 import { connectRemotePeer, sendToRemote } from 'src/services/peerJs';
+import { accessToChatRoom } from 'src/services/apiRoomsRequests';
 import users from 'src/services/users';
 import { useAuthStore } from 'src/stores/auth';
 
 const route = useRoute();
-const id_room = route.params.id;
+const remoteId = route.params.id;
 
 const authStore = useAuthStore();
 
 const message = ref('');
 const conversation = ref([]);
-
-const remoteId = sessionStorage.getItem('remote_user');
+const id_room = ref('');
 
 onMounted(async () => {
-  connectRemotePeer(remoteId);
+  const response = await connectWithPeerJs(authStore.user._id);
+  if (response) {
+    connectRemotePeer(remoteId);
+  }
+  const chatRoomData = {
+    password: 'contraseña',
+    id_guest: remoteId,
+    participants: [authStore.user._id, remoteId],
+  };
+  const { _id } = await accessToChatRoom(chatRoomData);
 
-  const chatLog = await getChatLog(id_room);
+  const chatLog = await getChatLog(_id);
 
   conversation.value.push(...chatLog);
+
+  id_room.value = _id;
 });
 
 function send() {
@@ -72,7 +84,9 @@ function send() {
     date: new Date(),
   };
   message.value = '';
-  updateChatLog(messageLog, id_room);
+
+  updateChatLog(messageLog, id_room.value);
+
   conversation.value.push(messageLog);
 
   sendToRemote(remoteId, messageLog);
@@ -80,7 +94,6 @@ function send() {
 
 function updatedAtTimeAgo(date) {
   const formattedTimeAgo = date ? timeago(date) : null;
-
   return formattedTimeAgo.charAt(0).toUpperCase() + formattedTimeAgo?.slice(1);
 }
 </script>
