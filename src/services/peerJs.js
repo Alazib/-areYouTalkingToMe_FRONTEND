@@ -2,31 +2,31 @@ import { Peer } from 'peerjs';
 import { useAuthStore } from 'src/stores/auth';
 
 const connections = {};
+let peer = undefined;
 
-const peer = new Peer(useAuthStore().user._id);
+function createNewPeer() {
+  const authStore = useAuthStore();
+  peer = new Peer(authStore.user._id);
+}
 
 function connectWithPeerJs() {
-  return new Promise((resolve, reject) => {
-    peer.on('open', (id) => {
-      console.log('Conexión con  PEERJS creada', id);
-      resolve(true);
-    });
-    peer.on('error', (error) => {
-      console.log(error);
-      reject(false);
-    });
+  peer.on('open', (id) => {
+    console.log('Conexión con  PEERJS creada', id);
+  });
+  peer.on('error', (error) => {
+    console.log(error);
+  });
 
-    peer.on('connection', (conn) => {
-      alert('Ulises ha conectado contigo');
+  peer.on('connection', (conn) => {
+    alert('Ulises ha conectado contigo');
 
-      sessionStorage.setItem(`conn:${conn.peer}`, `${conn.connectionId}`);
-      connections[conn.peer] = conn;
+    sessionStorage.setItem(`conn:${conn.peer}`, `${conn.connectionId}`);
+    connections[conn.peer] = conn;
 
-      conn.on('data', (data) => {
-        console.log('2: CONEXIÓN AL RECIBIR', conn);
-        alert('mensaje llegando a local');
-        console.log(data.message);
-      });
+    conn.on('data', (data) => {
+      console.log('2: CONEXIÓN AL RECIBIR', conn);
+      alert('mensaje llegando a local');
+      console.log(data.message);
     });
   });
 }
@@ -59,4 +59,4 @@ function sendToRemote(remoteUserId, messageLog) {
   connections[remoteUserId].send(messageLog);
 }
 
-export { connectWithPeerJs, connectRemotePeer, sendToRemote };
+export { connectWithPeerJs, connectRemotePeer, sendToRemote, createNewPeer };

@@ -58,10 +58,8 @@ const conversation = ref([]);
 const id_room = ref('');
 
 onMounted(async () => {
-  const response = await connectWithPeerJs(authStore.user._id);
-  if (response) {
-    connectRemotePeer(remoteId);
-  }
+  connectRemotePeer(remoteId);
+
   const chatRoomData = {
     password: 'contraseña',
     id_guest: remoteId,

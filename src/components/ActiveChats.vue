@@ -103,7 +103,7 @@ const offline = [
   },
 ];
 
-async function openChat(guestId) {
+function openChat(guestId) {
   router.replace(`/chat/${guestId}`);
 }
 </script>
