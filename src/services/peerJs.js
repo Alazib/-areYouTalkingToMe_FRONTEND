@@ -59,4 +59,14 @@ function sendToRemote(remoteUserId, messageLog) {
   connections[remoteUserId].send(messageLog);
 }
 
-export { connectWithPeerJs, connectRemotePeer, sendToRemote, createNewPeer };
+function disconnectFromPeerJs() {
+  peer.disconnect();
+}
+
+export {
+  connectWithPeerJs,
+  connectRemotePeer,
+  sendToRemote,
+  createNewPeer,
+  disconnectFromPeerJs,
+};

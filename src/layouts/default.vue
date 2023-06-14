@@ -25,7 +25,7 @@
               color="negative"
               icon="logout"
               class="w-fit"
-              @click="authStore.logout()"
+              @click="logout()"
             />
           </q-card-section>
           <q-btn dense flat round icon="menu" @click="toggleRightDrawer" />
@@ -58,15 +58,19 @@
 </template>
 
 <script setup>
-import { connectWithPeerJs, createNewPeer } from 'src/services/peerJs';
+import {
+  connectWithPeerJs,
+  createNewPeer,
+  disconnectFromPeerJs,
+} from 'src/services/peerJs';
 import { useAuthStore } from 'src/stores/auth';
 
 const leftDrawerOpen = ref(false);
 const rightDrawerOpen = ref(false);
 const authStore = useAuthStore();
+const router = useRouter();
 
 onMounted(() => {
-  console.log('HACES');
   createNewPeer();
   connectWithPeerJs(authStore.user._id);
 });
@@ -77,5 +81,11 @@ function toggleLeftDrawer() {
 
 function toggleRightDrawer() {
   rightDrawerOpen.value = !rightDrawerOpen.value;
+}
+
+function logout() {
+  authStore.logout();
+  router.replace('/auth');
+  disconnectFromPeerJs();
 }
 </script>

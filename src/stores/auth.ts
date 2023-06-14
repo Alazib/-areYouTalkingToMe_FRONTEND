@@ -76,5 +76,9 @@ export const useAuthStore = defineStore('auth', {
         return errorMessage;
       }
     },
+    logout() {
+      localStorage.clear();
+      sessionStorage.clear();
+    },
   },
 });
