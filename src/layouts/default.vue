@@ -1,23 +1,42 @@
 <template>
   <q-layout view="hHh lpr fFf">
     <q-header reveal bordered class="bg-primary text-white" height-hint="98">
-      <q-toolbar>
-        <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
-        <q-toolbar-title>
-          <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg" />
-          </q-avatar>
-          Are You Talking To Me?
-        </q-toolbar-title>
+      <q-toolbar flex justify-between>
+        <div flex>
+          <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
+          <q-toolbar-title>
+            <q-avatar>
+              <img src="https://cdn.quasar.dev/img/avatar1.jpg" />
+            </q-avatar>
+            Bienvenido, {{ authStore.user.name }}.
+          </q-toolbar-title>
+        </div>
 
-        <q-btn dense flat round icon="menu" @click="toggleRightDrawer" />
+        <div flex>
+          <q-card-section class="flex gap-3">
+            <q-btn
+              label="Mi perfil"
+              color="primary"
+              icon="account_circle"
+              to="/profile"
+            />
+            <q-btn
+              label="Salir"
+              color="negative"
+              icon="logout"
+              class="w-fit"
+              @click="authStore.logout()"
+            />
+          </q-card-section>
+          <q-btn dense flat round icon="menu" @click="toggleRightDrawer" />
+        </div>
       </q-toolbar>
 
-      <q-tabs align="left">
+      <!-- <q-tabs align="left">
         <q-route-tab to="/page1" label="Page One" />
         <q-route-tab to="/page2" label="Page Two" />
         <q-route-tab to="/page3" label="Page Three" />
-      </q-tabs>
+      </q-tabs> -->
     </q-header>
 
     <q-drawer show-if-above v-model="leftDrawerOpen" side="left" elevated>
@@ -47,6 +66,7 @@ const rightDrawerOpen = ref(false);
 const authStore = useAuthStore();
 
 onMounted(() => {
+  console.log('HACES');
   createNewPeer();
   connectWithPeerJs(authStore.user._id);
 });
