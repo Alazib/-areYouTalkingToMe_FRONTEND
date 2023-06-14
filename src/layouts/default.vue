@@ -39,10 +39,17 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { connectWithPeerJs, createNewPeer } from 'src/services/peerJs';
+import { useAuthStore } from 'src/stores/auth';
 
 const leftDrawerOpen = ref(false);
 const rightDrawerOpen = ref(false);
+const authStore = useAuthStore();
+
+onMounted(() => {
+  createNewPeer();
+  connectWithPeerJs(authStore.user._id);
+});
 
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;

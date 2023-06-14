@@ -42,7 +42,6 @@
 <script setup>
 import { timeago } from 'src/util/timeago';
 import { getChatLog, updateChatLog } from 'src/services/apiRoomsRequests';
-import { connectWithPeerJs } from 'src/services/peerJs';
 import { connectRemotePeer, sendToRemote } from 'src/services/peerJs';
 import { accessToChatRoom } from 'src/services/apiRoomsRequests';
 import users from 'src/services/users';

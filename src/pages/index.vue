@@ -5,5 +5,5 @@ router.replace('/dashboard');
 </script>
 <route lang="yaml">
 meta:
-  authRequired: false
+  authRequired: true
 </route>
