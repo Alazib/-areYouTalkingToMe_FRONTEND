@@ -7,16 +7,16 @@ let peer = undefined;
 function createNewPeer() {
   const authStore = useAuthStore();
   peer = new Peer(authStore.user._id);
-}
 
-function connectWithPeerJs() {
   peer.on('open', (id) => {
     console.log('Conexión con  PEERJS creada', id);
   });
   peer.on('error', (error) => {
     console.log(error);
   });
+}
 
+function connectWithPeerJs() {
   peer.on('connection', (conn) => {
     alert('Ulises ha conectado contigo');
 

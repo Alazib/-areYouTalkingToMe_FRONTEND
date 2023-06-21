@@ -57,20 +57,22 @@ const conversation = ref([]);
 const id_room = ref('');
 
 onMounted(async () => {
-  connectRemotePeer(remoteId);
+  setTimeout(async () => {
+    connectRemotePeer(remoteId);
 
-  const chatRoomData = {
-    password: 'contraseña',
-    id_guest: remoteId,
-    participants: [authStore.user._id, remoteId],
-  };
-  const { _id } = await accessToChatRoom(chatRoomData);
+    const chatRoomData = {
+      password: 'contraseña',
+      id_guest: remoteId,
+      participants: [authStore.user._id, remoteId],
+    };
+    const { _id } = await accessToChatRoom(chatRoomData);
 
-  const chatLog = await getChatLog(_id);
+    const chatLog = await getChatLog(_id);
 
-  conversation.value.push(...chatLog);
+    conversation.value.push(...chatLog);
 
-  id_room.value = _id;
+    id_room.value = _id;
+  }, 500);
 });
 
 function send() {
