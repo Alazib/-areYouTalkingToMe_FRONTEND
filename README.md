@@ -36,10 +36,13 @@
 
 - Use [ESLint](https://eslint.org) and [Prettier](https://prettier.io) on VSCode and before you commit with [husky](https://github.com/typicode/husky) and [lint-staged](https://github.com/okonet/lint-staged)
 
-
-## Backendm here:
+<br/>
+<br/>
+## Backend:
 https://github.com/Alazib/Remote_communication_app---Backend
 
+<br/>
+<br/>
 ## Scripts
 
 - `yarn dev` - Start the app in development mode (hot-code reloading, error reporting, etc)
