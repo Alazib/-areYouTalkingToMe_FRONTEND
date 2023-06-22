@@ -41,8 +41,6 @@
 
 ## Backend
 
-<br/>
-
 https://github.com/Alazib/Remote_communication_app---Backend
 
 <br/>
