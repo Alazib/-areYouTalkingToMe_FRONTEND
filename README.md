@@ -1,9 +1,3 @@
-# Vital
-
-Opiniated Quasar + Vite starter template.
-
-<br>
-
 ## Features
 
 <b>
@@ -42,27 +36,8 @@ Opiniated Quasar + Vite starter template.
 
 - Use [ESLint](https://eslint.org) and [Prettier](https://prettier.io) on VSCode and before you commit with [husky](https://github.com/typicode/husky) and [lint-staged](https://github.com/okonet/lint-staged)
 
-- Deploy to [Vercel](https://vercel.com) or [Netlify](https://www.netlify.com) (zero-config)
 
 <br>
-
-<br>
-
-## Getting started
-
-### GitHub Template
-
-[Create a repo from this template on GitHub](https://github.com/oumarbarry/vital/generate)
-
-### Clone to local
-
-Use [degit](https://github.com/Rich-Harris/degit) to clone to your machine with an empty git history
-
-```bash
-npx tiged oumarbarry/vital my-vital-app
-cd my-vital-app
-yarn
-```
 
 <br>
 
@@ -73,9 +48,3 @@ yarn
 - `yarn test` - Run the unit tests with Vitest
 - `yarn format` - Format the files with Prettier
 - `yarn lint` - Lint the files with ESLint
-
-<br>
-
-### To Customize the configuration
-
-See [Configuring quasar.config.js](https://quasar.dev/quasar-cli-vite/quasar-config-js).
