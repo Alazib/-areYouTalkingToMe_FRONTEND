@@ -38,12 +38,16 @@
 
 <br/>
 <br/>
+
 ## Backend
+
+<br/>
 
 https://github.com/Alazib/Remote_communication_app---Backend
 
 <br/>
 <br/>
+
 ## Scripts
 
 - `yarn dev` - Start the app in development mode (hot-code reloading, error reporting, etc)
