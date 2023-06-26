@@ -46,11 +46,13 @@ import { connectRemotePeer, sendToRemote } from 'src/services/peerJs';
 import { accessToChatRoom } from 'src/services/apiRoomsRequests';
 import users from 'src/services/users';
 import { useAuthStore } from 'src/stores/auth';
+import { useMessageLogStore } from 'src/stores/messageLog';
 
 const route = useRoute();
 const remoteId = route.params.id;
 
 const authStore = useAuthStore();
+const messageLogStore = useMessageLogStore();
 
 const message = ref('');
 const conversation = ref([]);
@@ -95,6 +97,11 @@ function updatedAtTimeAgo(date) {
   const formattedTimeAgo = date ? timeago(date) : null;
   return formattedTimeAgo.charAt(0).toUpperCase() + formattedTimeAgo?.slice(1);
 }
+
+watch(messageLogStore, () => {
+  const messageLog = messageLogStore.getMessageLog;
+  conversation.value.push(messageLog);
+});
 </script>
 
 <sytle scoped lang="scss">
